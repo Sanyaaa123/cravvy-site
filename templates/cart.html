@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Cart — CRAVVY{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+  <h1>Your <span class="accent">cart.</span></h1>
+
+  {% if summary.total_qty == 0 %}
+    <div class="cart-empty">
+      <p class="scribble">cart's emptier than a gym in december.</p>
+      <p>Add some packs. Past you would be proud.</p>
+      <a href="{{ url_for('shop') }}" class="btn btn-primary btn-large">START SHOPPING →</a>
+    </div>
+  {% else %}
+    <p class="scribble" style="font-size: 22px;">{{ summary.total_qty }} item{{ 's' if summary.total_qty != 1 else '' }} ready to go.</p>
+
+    <div class="cart-layout">
+      <!-- Items -->
+      <div class="cart-items">
+        {% for item in summary.line_items %}
+        <div class="cart-item">
+          <div class="cart-item-thumb" style="background: {{ item.color }};">
+            {% if item.kind == 'product' %}
+              {% set product_img = {
+                'classic-peanut': 'images/packs/classic-peanut.png',
+                'coco-crunch': 'images/packs/coco-crunch.png',
+                'choco-fudge': 'images/packs/choco-fudge.png',
+                'salted-caramel': 'images/packs/salted-caramel.png',
+                'cookies-cream': 'images/packs/cookies-cream.png',
+                'pista-crunch': 'images/packs/pista-crunch.png'
+              } %}
+              <img src="{{ url_for('static', filename=product_img[item.slug]) }}" alt="{{ item.name }}" />
+            {% else %}
+              <span style="color: {{ item.on_color }}; font-weight: 900; font-family: 'Bagel Fat One';">×{{ item.pack_count }}</span>
+            {% endif %}
+          </div>
+          <div class="cart-item-info">
+            <h3>{{ item.name }}</h3>
+            <p>"{{ item.subtitle }}"</p>
+            <p class="cart-item-meta">
+              ₹{{ item.unit_price }} each
+              {% if item.kind == 'combo' %} · {{ item.pack_count }} packs total{% endif %}
+            </p>
+          </div>
+          <div class="cart-item-controls">
+            <div class="qty-stepper">
+              <button type="button" data-cart-dec data-slug="{{ item.slug }}" data-kind="{{ item.kind }}" data-qty="{{ item.qty }}">−</button>
+              <input type="number" value="{{ item.qty }}" readonly />
+              <button type="button" data-cart-inc data-slug="{{ item.slug }}" data-kind="{{ item.kind }}" data-qty="{{ item.qty }}">+</button>
+            </div>
+            <div class="cart-item-price">₹{{ item.line_total }}</div>
+            <button type="button" class="cart-item-remove" data-cart-remove data-slug="{{ item.slug }}" data-kind="{{ item.kind }}">remove</button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Summary -->
+      <div class="cart-summary">
+        <h2>Order summary</h2>
+
+        <div class="cart-summary-row">
+          <span>Subtotal ({{ summary.total_qty }} items)</span>
+          <span>{{ summary.subtotal | inr }}</span>
+        </div>
+        <div class="cart-summary-row">
+          <span>Shipping</span>
+          <span>{% if summary.shipping == 0 %}<span style="color: #00aa55; font-weight: 800;">FREE</span>{% else %}{{ summary.shipping | inr }}{% endif %}</span>
+        </div>
+
+        {% if summary.amount_to_free_shipping > 0 %}
+        <div class="cart-shipping-meter">
+          Add {{ summary.amount_to_free_shipping | inr }} more for FREE shipping ⚡
+          <div class="meter-bar">
+            <div class="meter-fill" style="width: {{ (summary.subtotal / 399 * 100) | round | int }}%;"></div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="cart-summary-row total">
+          <span>Total</span>
+          <span>{{ summary.total | inr }}</span>
+        </div>
+
+        <a href="{{ url_for('checkout') }}" class="btn btn-primary btn-block btn-large" style="margin-top: 24px;">
+          CHECKOUT →
+        </a>
+        <a href="{{ url_for('shop') }}" style="display: block; text-align: center; margin-top: 16px; color: var(--ink); text-decoration: underline; font-weight: 600; font-size: 14px;">
+          ← keep shopping
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

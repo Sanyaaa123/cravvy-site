@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Admin login — CRAVVY{% endblock %}
+
+{% block content %}
+<div class="admin-login">
+  <h1>Admin ⚡</h1>
+  <p class="scribble" style="font-size: 22px;">just for the founders.</p>
+
+  <form method="POST">
+    <div class="form-field">
+      <label>Password</label>
+      <input type="password" name="password" required autofocus />
+    </div>
+    <button type="submit" class="btn btn-primary btn-block btn-large">LOG IN</button>
+  </form>
+
+  <p style="margin-top: 24px; font-size: 13px; opacity: 0.5;">default: <code style="background: rgba(255,230,0,0.1); padding: 2px 6px; border-radius: 4px;">cravvy123</code> · change ADMIN_PASSWORD env var in prod</p>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}You're on the list — CRAVVY{% endblock %}
+
+{% block content %}
+<div class="success-page">
+  <div class="success-checkmark">⚡</div>
+  <h1>You're on <span class="accent">the list.</span></h1>
+  <span class="scribble">and we mean that literally.</span>
+
+  <!-- WAITLIST CARD — humble + on-brand -->
+  <div class="waitlist-card">
+    <div class="waitlist-eyebrow">a little honesty ⚡</div>
+    <p class="waitlist-message">
+      Real talk — CRAVVY isn't shipping <em>just yet</em>. We're still in the kitchen,
+      tasting, tweaking, getting the slices right. We'd rather take 2 more weeks than
+      send you something we wouldn't eat ourselves.
+    </p>
+    <p class="waitlist-message">
+      <strong>So here's the deal:</strong> you're now officially on our waitlist.
+      The second we're ready, you'll be the <span class="scribble" style="font-size: 1.1em;">first</span> to know —
+      <strong style="color: var(--volt);">at a discounted price</strong>, before anyone else gets to taste it.
+    </p>
+    <p class="waitlist-message" style="font-family: 'Caveat', cursive; font-size: 26px; line-height: 1.3; color: var(--volt); margin-top: 28px;">
+      thank you for believing in us before we even had something to ship. that means everything. ✦
+    </p>
+    <p class="waitlist-signoff">
+      — the CRAVVY crew
+    </p>
+  </div>
+
+  <div class="success-card">
+    <div class="success-order-num">Waitlist #{{ order.order_number }}</div>
+
+    {% for item in items %}
+    <div class="success-line">
+      <span><strong>{{ item.name }}</strong> × {{ item.qty }}</span>
+      <span>₹{{ item.line_total }}</span>
+    </div>
+    {% endfor %}
+
+    <div class="success-line success-total">
+      <span>Reserved value</span><span>₹{{ order.total }}</span>
+    </div>
+  </div>
+
+  <p style="font-size: 16px; opacity: 0.8; margin-bottom: 32px; max-width: 540px; margin-left: auto; margin-right: auto;">
+    We'll reach out to <strong style="color: var(--volt);">{{ order.customer_email }}</strong> the moment we're ready to ship — with your exclusive launch-day discount.
+    No charges yet. No spam. Just one good email.
+  </p>
+
+  <a href="{{ url_for('index') }}" class="btn btn-primary btn-large">BACK TO HOME →</a>
+
+  <p style="margin-top: 32px; font-size: 13px; opacity: 0.5;">
+    psst — share <span style="color: var(--volt); font-weight: 700;">@cravvyhq</span> with someone who'd love this. they'll thank you when we ship.
+  </p>
+</div>
+
+<script>
+  (function () {
+    const colors = ['#FFE600', '#FF6A1A', '#EC2C8A', '#7B3FF2', '#00A19A', '#B8DC2A'];
+    function burst() {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position: fixed; top: 30%; left: 50%; pointer-events: none; z-index: 8000;';
+      for (let i = 0; i < 30; i++) {
+        const b = document.createElement('div');
+        const angle = (i / 30) * 360;
+        const distance = 200 + Math.random() * 200;
+        b.textContent = '⚡';
+        b.style.cssText = `
+          position: absolute; left: 0; top: 0;
+          font-size: ${20 + Math.random() * 20}px;
+          color: ${colors[i % colors.length]};
+          transform: translate(0, 0) rotate(${Math.random() * 360}deg);
+          transition: transform 1.4s cubic-bezier(.3,1,.5,1), opacity 1.4s;
+        `;
+        wrap.appendChild(b);
+        requestAnimationFrame(() => {
+          const x = Math.cos(angle * Math.PI / 180) * distance;
+          const y = Math.sin(angle * Math.PI / 180) * distance + 200;
+          b.style.transform = `translate(${x}px, ${y}px) rotate(720deg) scale(0.3)`;
+          b.style.opacity = '0';
+        });
+      }
+      document.body.appendChild(wrap);
+      setTimeout(() => wrap.remove(), 1500);
+    }
+    setTimeout(burst, 200);
+    setTimeout(burst, 400);
+  })();
+</script>
+{% endblock %}

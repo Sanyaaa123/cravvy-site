@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}404 — CRAVVY{% endblock %}
+
+{% block content %}
+<div class="error-page">
+  <h1>404</h1>
+  <p class="scribble" style="font-size: 28px; color: var(--volt);">this page got snacked.</p>
+  <p>but the others are ready to be eaten.</p>
+  <a href="{{ url_for('shop') }}" class="btn btn-primary btn-large" style="margin-top: 16px;">SHOP FLAVORS →</a>
+</div>
+{% endblock %}

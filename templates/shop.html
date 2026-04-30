@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}SHOP — All Flavors · CRAVVY{% endblock %}
+
+{% block content %}
+<div class="shop-page">
+  <div class="shop-hero">
+    <h1>All <span class="accent">six.</span></h1>
+    <p class="scribble">pick your poison. (it's all good for you.)</p>
+  </div>
+
+  <div class="shop-tabs">
+    <button class="shop-tab active" data-filter="all">ALL FLAVORS</button>
+    <button class="shop-tab" data-filter="combos">COMBO PACKS</button>
+  </div>
+
+  <!-- Single SKUs -->
+  <div class="shop-grid" id="grid-singles">
+    {% for p in products %}
+    <div class="shop-card">
+      <a href="{{ url_for('product_detail', slug=p.slug) }}" class="shop-card-img-link">
+        <div class="shop-card-img" style="background: {{ p.color }};">
+          <img src="{{ url_for('static', filename=p.image) }}" alt="CRAVVY {{ p.name }}" loading="lazy" />
+        </div>
+      </a>
+      <div class="shop-card-info">
+        <div class="shop-card-info-left">
+          <h3>{{ p.name }}</h3>
+          <p>"{{ p.tagline.split('.')[0] }}."</p>
+          <div class="shop-card-meta">
+            <span class="meta-pill">{{ p.protein }} PROTEIN</span>
+            <span class="meta-pill meta-pill-secondary">{{ p.fiber }} FIBER</span>
+          </div>
+        </div>
+        <div class="shop-card-info-right">
+          <div class="shop-card-price">₹{{ p.price }}</div>
+          <button type="button"
+                  class="btn btn-primary shop-add-btn"
+                  data-add-to-cart data-slug="{{ p.slug }}" data-kind="product">ADD ⚡</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Combos -->
+  <div style="margin-top: 80px;">
+    <h2 class="h-display h2" style="text-align: center; margin-bottom: 16px;">Or stock up.</h2>
+    <p style="text-align: center; font-family: 'Caveat'; font-size: 24px; color: var(--volt); margin-bottom: 50px;">save more, eat more, regret nothing</p>
+
+    <div class="combo-grid">
+      {% for c in combos %}
+      <div class="combo-card {% if c.most_picked %}featured{% endif %}">
+        <h3 class="combo-name">{{ c.name }}</h3>
+        <p class="combo-tagline">{{ c.tagline }}</p>
+        <div class="combo-qty">{{ c.qty }} packs · any flavors</div>
+        <div class="combo-price">₹{{ c.price }}</div>
+        <div class="combo-original">₹{{ c.original_price }}</div>
+        <div class="combo-per-pack">~₹{{ c.price_per_pack }}/pack · save ₹{{ c.savings }}</div>
+        <ul class="combo-extras">
+          {% for x in c.extras %}<li>{{ x }}</li>{% endfor %}
+        </ul>
+        <button class="btn btn-primary btn-block" data-add-to-cart data-slug="{{ c.slug }}" data-kind="combo">ADD COMBO</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.shop-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.dataset.filter;
+      const target = filter === 'combos' ? document.querySelector('.combo-grid') : document.querySelector('#grid-singles');
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+{% endblock %}

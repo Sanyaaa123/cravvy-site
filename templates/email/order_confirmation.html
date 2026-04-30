@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're on the CRAVVY waitlist</title>
+</head>
+<body style="margin:0;padding:0;background:#0A0A0A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#FAF6E8;">
+
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0A0A0A;padding:24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;width:100%;">
+
+          <!-- Yellow header -->
+          <tr>
+            <td style="background:#FFE600;padding:20px 32px;border-radius:14px 14px 0 0;border:3px solid #0A0A0A;border-bottom:none;">
+              <table role="presentation" width="100%"><tr>
+                <td style="font-family:'Arial Black',sans-serif;font-size:38px;font-weight:900;color:#0A0A0A;letter-spacing:-1px;line-height:1;">CRAVVY ⚡</td>
+                <td align="right" style="font-size:11px;font-weight:700;color:#0A0A0A;letter-spacing:1.5px;text-transform:uppercase;">Peanut butter slices</td>
+              </tr></table>
+            </td>
+          </tr>
+
+          <!-- Hero — you're on the list -->
+          <tr>
+            <td style="background:#7B3FF2;padding:48px 32px;text-align:center;border-left:3px solid #0A0A0A;border-right:3px solid #0A0A0A;">
+              <div style="font-size:64px;line-height:1;margin-bottom:8px;">⚡</div>
+              <div style="font-family:'Arial Black',sans-serif;color:#FFE600;font-size:38px;line-height:1.05;font-weight:900;margin-bottom:12px;letter-spacing:-1px;">YOU'RE ON THE LIST.</div>
+              <div style="color:#FAF6E8;font-size:16px;line-height:1.5;">and we mean that literally.</div>
+            </td>
+          </tr>
+
+          <!-- Honest message -->
+          <tr>
+            <td style="background:#0A0A0A;padding:32px;border-left:3px solid #0A0A0A;border-right:3px solid #0A0A0A;color:#FAF6E8;">
+              <div style="font-size:13px;color:#FFE600;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:12px;">Hi {{ customer_name.split()[0] if customer_name else 'snack lover' }},</div>
+
+              <p style="font-size:16px;line-height:1.6;margin:0 0 16px;color:#FAF6E8;">
+                Real talk — CRAVVY isn't shipping <em style="color:#FFE600;font-style:normal;">just yet</em>. We're still in the kitchen, tasting, tweaking, getting the slices right. We'd rather take 2 more weeks than send you something we wouldn't eat ourselves.
+              </p>
+
+              <p style="font-size:16px;line-height:1.6;margin:0 0 24px;color:#FAF6E8;">
+                <strong style="color:#FFE600;">So here's the deal:</strong> you're now officially on our waitlist. The second we're ready, you'll be the first to know — at a <strong style="color:#FFE600;">discounted price</strong>, before anyone else gets to taste it.
+              </p>
+
+              <!-- Waitlist # box -->
+              <table role="presentation" width="100%" style="background:rgba(255,230,0,0.08);border:2px solid #FFE600;border-radius:12px;padding:18px;margin:0 0 24px;">
+                <tr>
+                  <td>
+                    <div style="font-size:11px;color:#FAF6E8;opacity:0.7;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;">Waitlist Number</div>
+                    <div style="font-family:'Arial Black',sans-serif;font-size:24px;color:#FFE600;font-weight:900;letter-spacing:-0.5px;">{{ order_number }}</div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- What they reserved -->
+              <div style="font-size:11px;color:#FFE600;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:12px;">What you reserved</div>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom:24px;">
+                {% for item in items %}
+                <tr>
+                  <td style="padding:12px 0;border-bottom:1px dashed rgba(255,230,0,0.2);">
+                    <table role="presentation" width="100%"><tr>
+                      <td style="vertical-align:top;">
+                        <div style="font-weight:700;font-size:16px;color:#FAF6E8;">{{ item.name }}</div>
+                        <div style="font-size:13px;color:#FAF6E8;opacity:0.6;margin-top:2px;">qty {{ item.qty }}</div>
+                      </td>
+                      <td align="right" style="vertical-align:top;font-weight:700;font-size:16px;color:#FAF6E8;">₹{{ item.line_total }}</td>
+                    </tr></table>
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <td style="font-family:'Arial Black',sans-serif;font-size:18px;color:#FFE600;font-weight:900;">Reserved value</td>
+                  <td align="right" style="font-family:'Arial Black',sans-serif;font-size:18px;color:#FFE600;font-weight:900;">₹{{ total }}</td>
+                </tr>
+              </table>
+
+              <p style="margin:28px 0 0;font-family:'Caveat',Georgia,serif;font-style:italic;font-size:20px;line-height:1.4;color:#FFE600;">
+                thank you for believing in us before we even had something to ship. that means everything. ✦
+              </p>
+
+              <p style="margin:24px 0 0;font-size:14px;line-height:1.55;color:#FAF6E8;opacity:0.7;">
+                — the CRAVVY crew
+              </p>
+
+              <!-- Reassurance -->
+              <table role="presentation" width="100%" style="background:rgba(255,230,0,0.04);border:1px solid rgba(255,230,0,0.15);border-radius:10px;padding:14px;margin:28px 0 0;">
+                <tr>
+                  <td>
+                    <div style="font-size:10px;color:#FFE600;text-transform:uppercase;letter-spacing:1.5px;font-weight:800;margin-bottom:4px;">⚡ Heads up</div>
+                    <div style="font-size:13px;color:#FAF6E8;line-height:1.5;opacity:0.85;">No charges have been made yet. We'll reach out the moment we're ready to ship — with your launch-day discount baked in.</div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Tag-us prompt -->
+          <tr>
+            <td style="background:#FFE600;padding:24px 32px;text-align:center;border-left:3px solid #0A0A0A;border-right:3px solid #0A0A0A;">
+              <div style="font-family:'Arial Black',sans-serif;font-size:18px;color:#0A0A0A;font-weight:900;line-height:1.3;">share @cravvyhq with someone who'd love this ⚡</div>
+              <div style="font-size:13px;color:#0A0A0A;margin-top:4px;opacity:0.75;">they'll thank you when we ship.</div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#0A0A0A;padding:24px 32px;text-align:center;border:3px solid #0A0A0A;border-top:none;border-radius:0 0 14px 14px;">
+              <div style="font-family:'Arial Black',sans-serif;font-size:24px;color:#FFE600;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px;">CRAVVY</div>
+              <div style="font-size:12px;color:#FAF6E8;opacity:0.5;">made in india · coming soon · worth the wait</div>
+              <div style="font-size:11px;color:#FAF6E8;opacity:0.4;margin-top:14px;">You got this email because you joined our waitlist. Reply with any questions.</div>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,29 @@
+Hi {{ customer_name.split()[0] if customer_name else 'snack lover' }},
+
+YOU'RE ON THE LIST. ⚡
+And we mean that literally.
+
+Real talk — CRAVVY isn't shipping just yet. We're still in the kitchen, tasting, tweaking, getting the slices right. We'd rather take 2 more weeks than send you something we wouldn't eat ourselves.
+
+So here's the deal: you're now officially on our waitlist. The second we're ready, you'll be the first to know — at a DISCOUNTED PRICE, before anyone else gets to taste it.
+
+WAITLIST NUMBER: {{ order_number }}
+
+WHAT YOU RESERVED:
+{% for item in items %}
+  - {{ item.name }} × {{ item.qty }}  =  ₹{{ item.line_total }}
+{% endfor %}
+-----------------------------------------
+Reserved value: ₹{{ total }}
+
+⚡ HEADS UP: No charges have been made yet. We'll reach out the moment we're ready to ship — with your launch-day discount baked in.
+
+Thank you for believing in us before we even had something to ship. That means everything. ✦
+
+— the CRAVVY crew
+
+—
+CRAVVY ⚡
+made in india · coming soon · worth the wait
+
+You got this email because you joined our waitlist. Reply with any questions.

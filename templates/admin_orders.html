@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Orders — CRAVVY Admin{% endblock %}
+
+{% block content %}
+<div class="admin-orders">
+  <h1>Orders ⚡</h1>
+  <p class="admin-orders-count">{{ orders | length }} order{{ 's' if orders|length != 1 else '' }} so far · <a href="{{ url_for('admin_logout') }}" style="color: var(--scribble); text-decoration: underline;">logout</a></p>
+
+  {% if not orders %}
+    <p style="font-family: 'Caveat'; font-size: 28px; color: var(--volt); padding: 60px 0; text-align: center;">no orders yet. ship hard. 🚀</p>
+  {% else %}
+    {% for o in orders %}
+    <div class="order-card">
+      <div>
+        <h3>{{ o.order_number }}</h3>
+        <p><strong>{{ o.customer_name }}</strong></p>
+        <p>{{ o.customer_email }}<br/>{{ o.customer_phone }}</p>
+        <p style="opacity: 0.6; font-size: 12px; margin-top: 6px;">{{ o.created_at }}</p>
+        <span class="order-status">{{ o.status }}</span>
+      </div>
+      <div>
+        <h3>Address</h3>
+        <p>{{ o.address }}</p>
+        <p style="margin-top: 8px; opacity: 0.6;">Payment: <strong style="color: var(--volt);">{{ o.payment_method }}</strong></p>
+      </div>
+      <div>
+        <h3>Items</h3>
+        {% for item in o.order_items %}
+        <p>· {{ item.name }} × {{ item.qty }} → ₹{{ item.line_total }}</p>
+        {% endfor %}
+      </div>
+      <div style="text-align: right;">
+        <p style="font-size: 13px; opacity: 0.7;">Subtotal ₹{{ o.subtotal }}</p>
+        <p style="font-size: 13px; opacity: 0.7;">Ship ₹{{ o.shipping }}</p>
+        <div class="total">₹{{ o.total }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

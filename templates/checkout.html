@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout — CRAVVY{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <h1>Almost there. <span style="color: var(--volt);">⚡</span></h1>
+  <p style="font-family: 'Caveat'; font-size: 22px; color: var(--volt); margin-bottom: 32px;">just need a few details. won't share. won't spam. promise.</p>
+
+  <form method="POST" action="{{ url_for('checkout_submit') }}">
+    <div class="checkout-layout">
+      <div class="checkout-form">
+
+        <!-- Contact -->
+        <div class="form-section">
+          <h3>1. Who are you?</h3>
+          <div class="form-field">
+            <label>Full name</label>
+            <input type="text" name="name" required value="{{ form_data.name if form_data else '' }}" placeholder="e.g. Arjun Mehta" />
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Email</label>
+              <input type="email" name="email" required value="{{ form_data.email if form_data else '' }}" placeholder="for order updates" />
+            </div>
+            <div class="form-field">
+              <label>Phone</label>
+              <input type="tel" name="phone" required pattern="[0-9]{10}" value="{{ form_data.phone if form_data else '' }}" placeholder="10 digits" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="form-section">
+          <h3>2. Where to?</h3>
+          <div class="form-field">
+            <label>Address</label>
+            <textarea name="address" required rows="2" placeholder="Flat / building / street">{{ form_data.address if form_data else '' }}</textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>City</label>
+              <input type="text" name="city" required value="{{ form_data.city if form_data else '' }}" />
+            </div>
+            <div class="form-field">
+              <label>State</label>
+              <input type="text" name="state" required value="{{ form_data.state if form_data else '' }}" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Pincode</label>
+            <input type="text" name="pincode" required pattern="[0-9]{6}" value="{{ form_data.pincode if form_data else '' }}" maxlength="6" placeholder="6 digits" />
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="form-section">
+          <h3>3. How are you paying?</h3>
+          <div class="payment-options">
+            <label class="payment-option checked">
+              <input type="radio" name="payment_method" value="COD" checked />
+              <div class="payment-option-info">
+                <h4>💵 Cash on Delivery</h4>
+                <p>Pay when it arrives. Most popular.</p>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment_method" value="UPI" />
+              <div class="payment-option-info">
+                <h4>📱 UPI / GPay / PhonePe</h4>
+                <p>Mock — no real charge in this demo.</p>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment_method" value="CARD" />
+              <div class="payment-option-info">
+                <h4>💳 Credit / Debit Card</h4>
+                <p>Mock — no real charge in this demo.</p>
+              </div>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Summary -->
+      <div class="checkout-summary">
+        <h2 style="font-family: 'Bagel Fat One'; font-size: 28px; margin-bottom: 20px;">Your order</h2>
+
+        {% for item in summary['line_items'] %}
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 14px;">
+          <div>
+            <strong>{{ item.name }}</strong><br/>
+            <span style="opacity: 0.6; font-size: 12px;">qty {{ item.qty }} × ₹{{ item.unit_price }}</span>
+          </div>
+          <span>₹{{ item.line_total }}</span>
+        </div>
+        {% endfor %}
+
+        <div style="margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+            <span>Subtotal</span><span>{{ summary.subtotal | inr }}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 6px 0;">
+            <span>Shipping</span>
+            <span>{% if summary.shipping == 0 %}<strong style="color: #00aa55;">FREE</strong>{% else %}{{ summary.shipping | inr }}{% endif %}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 16px 0 0; border-top: 2px dashed var(--ink); margin-top: 8px; font-family: 'Bagel Fat One'; font-size: 28px;">
+            <span>Total</span><span>{{ summary.total | inr }}</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-large" style="margin-top: 24px;">
+          PLACE ORDER ⚡
+        </button>
+        <p style="text-align: center; margin-top: 12px; font-size: 12px; opacity: 0.7;">
+          🔒 Mock checkout — no payments processed
+        </p>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

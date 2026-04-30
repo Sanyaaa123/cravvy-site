@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} — CRAVVY{% endblock %}
+{% block description %}{{ product.long_desc }}{% endblock %}
+
+{% block content %}
+<div class="product-page">
+  <div class="product-detail">
+
+    <!-- Real pack photo -->
+    <div class="product-pack-photo" style="background: {{ product.color }};">
+      <img src="{{ url_for('static', filename=product.image) }}" alt="CRAVVY {{ product.name }} pack" />
+    </div>
+
+    <!-- Info -->
+    <div class="product-info">
+      <span class="badge">{{ product.badge }}</span>
+      <h1>{{ product.name }}</h1>
+      <p class="product-tagline">"{{ product.tagline }}"</p>
+
+      <div class="product-stats">
+        <span><span class="stars">★★★★★</span> {{ product.rating }} ({{ product.review_count }} reviews)</span>
+      </div>
+
+      <!-- Big protein/fiber/slices stamps -->
+      <div class="product-stamp-row">
+        <div class="product-stamp">
+          <div class="stamp-num">{{ product.protein }}</div>
+          <div class="stamp-label">PROTEIN<br/>per pack</div>
+        </div>
+        <div class="product-stamp">
+          <div class="stamp-num">{{ product.fiber }}</div>
+          <div class="stamp-label">FIBER<br/>per pack</div>
+        </div>
+        <div class="product-stamp">
+          <div class="stamp-num">{{ product.slices_per_pack }}</div>
+          <div class="stamp-label">SLICES<br/>inside</div>
+        </div>
+      </div>
+
+      <p class="product-desc">{{ product.long_desc }}</p>
+
+      <div class="product-meta-grid">
+        <div class="product-meta-card">
+          <h4>FLAVOR NOTES</h4>
+          <p>{{ product.flavor_notes | join(' · ') }}</p>
+        </div>
+        <div class="product-meta-card">
+          <h4>BEST FOR</h4>
+          <p>{{ product.best_for }}</p>
+        </div>
+      </div>
+
+      <div class="product-buy-row">
+        <span class="product-price">₹{{ product.price }} <small>/ pack</small></span>
+        <div class="qty-stepper">
+          <button type="button" data-qty-dec>−</button>
+          <input type="number" value="1" min="1" max="99" data-qty-input />
+          <button type="button" data-qty-inc>+</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-large btn-block"
+              data-add-to-cart data-slug="{{ product.slug }}" data-kind="product">
+        ADD TO CART ⚡
+      </button>
+
+      <p style="margin-top: 16px; font-size: 14px; opacity: 0.7;">
+        ✦ Free shipping on orders over ₹399
+        <br/>✦ COD available · Pan-India delivery
+      </p>
+    </div>
+  </div>
+
+  <!-- Other flavors -->
+  <div class="product-others">
+    <h2>Try the others →</h2>
+    <div class="shop-grid">
+      {% for p in others %}
+      <div class="shop-card">
+        <a href="{{ url_for('product_detail', slug=p.slug) }}" class="shop-card-img-link">
+          <div class="shop-card-img" style="background: {{ p.color }};">
+            <img src="{{ url_for('static', filename=p.image) }}" alt="CRAVVY {{ p.name }}" loading="lazy" />
+          </div>
+        </a>
+        <div class="shop-card-info">
+          <div class="shop-card-info-left">
+            <h3>{{ p.name }}</h3>
+            <p>"{{ p.tagline.split('.')[0] }}."</p>
+            <div class="shop-card-meta">
+              <span class="meta-pill">{{ p.protein }} PROTEIN</span>
+            </div>
+          </div>
+          <div class="shop-card-info-right">
+            <div class="shop-card-price">₹{{ p.price }}</div>
+            <button type="button" class="btn btn-primary shop-add-btn"
+                    data-add-to-cart data-slug="{{ p.slug }}" data-kind="product">ADD ⚡</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
