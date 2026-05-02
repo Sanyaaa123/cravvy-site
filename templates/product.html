@@ -7,9 +7,17 @@
 <div class="product-page">
   <div class="product-detail">
 
-    <!-- Real pack photo -->
-    <div class="product-pack-photo" style="background: {{ product.color }};">
-      <img src="{{ url_for('static', filename=product.image) }}" alt="CRAVVY {{ product.name }} pack" />
+    <!-- Pack photo with flip — hover/tap to see ingredients on back -->
+    <div class="product-pack-flip" style="background: {{ product.color }};">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <img src="{{ url_for('static', filename=product.image) }}" alt="CRAVVY {{ product.name }} pack — front" />
+        </div>
+        <div class="flip-back">
+          <img src="{{ url_for('static', filename=product.image_back) }}" alt="CRAVVY {{ product.name }} pack — back / ingredients" />
+        </div>
+      </div>
+      <div class="flip-hint">tap to flip ⚡</div>
     </div>
 
     <!-- Info -->
@@ -102,4 +110,91 @@
     </div>
   </div>
 </div>
+
+<style>
+  /* === Pack flip card === */
+  .product-pack-flip {
+    border-radius: 16px;
+    border: 4px solid #0A0A0A;
+    padding: 40px;
+    min-height: 500px;
+    box-shadow: 10px 10px 0 var(--volt);
+    position: relative;
+    overflow: hidden;
+    perspective: 1500px;
+    cursor: pointer;
+  }
+  .product-pack-flip .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    transition: transform 0.7s cubic-bezier(.4,1.4,.5,1);
+    transform-style: preserve-3d;
+  }
+  .product-pack-flip.flipped .flip-inner {
+    transform: rotateY(180deg);
+  }
+  .product-pack-flip .flip-front,
+  .product-pack-flip .flip-back {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .product-pack-flip .flip-back {
+    transform: rotateY(180deg);
+  }
+  .product-pack-flip .flip-front img,
+  .product-pack-flip .flip-back img {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4));
+  }
+  .product-pack-flip .flip-hint {
+    position: absolute;
+    bottom: 12px;
+    right: 16px;
+    background: rgba(10,10,10,0.85);
+    color: var(--volt);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 2px solid var(--volt);
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.3s;
+  }
+  .product-pack-flip.flipped .flip-hint::before {
+    content: 'tap to flip back ⚡';
+  }
+  .product-pack-flip.flipped .flip-hint {
+    font-size: 0;
+  }
+  .product-pack-flip.flipped .flip-hint::before {
+    font-size: 11px;
+  }
+
+  @media (max-width: 768px) {
+    .product-pack-flip { min-height: 360px; padding: 24px; }
+    .product-pack-flip .flip-inner { min-height: 320px; }
+    .product-pack-flip .flip-front img,
+    .product-pack-flip .flip-back img { max-width: 280px; }
+  }
+</style>
+
+<script>
+  // Click to flip the pack
+  document.querySelectorAll('.product-pack-flip').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+  });
+</script>
 {% endblock %}

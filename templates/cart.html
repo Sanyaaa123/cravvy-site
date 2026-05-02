@@ -23,12 +23,12 @@
           <div class="cart-item-thumb" style="background: {{ item.color }};">
             {% if item.kind == 'product' %}
               {% set product_img = {
-                'classic-peanut': 'images/packs/classic-peanut.png',
-                'coco-crunch': 'images/packs/coco-crunch.png',
-                'choco-fudge': 'images/packs/choco-fudge.png',
-                'salted-caramel': 'images/packs/salted-caramel.png',
-                'cookies-cream': 'images/packs/cookies-cream.png',
-                'pista-crunch': 'images/packs/pista-crunch.png'
+                'classic-peanut': 'images/packs/classic-peanut-front.png',
+                'coco-crunch': 'images/packs/coco-crunch-front.png',
+                'choco-fudge': 'images/packs/choco-fudge-front.png',
+                'salted-caramel': 'images/packs/salted-caramel-front.png',
+                'cookies-cream': 'images/packs/cookies-cream-front.png',
+                'pista-crunch': 'images/packs/pista-crunch-front.png'
               } %}
               <img src="{{ url_for('static', filename=product_img[item.slug]) }}" alt="{{ item.name }}" />
             {% else %}
