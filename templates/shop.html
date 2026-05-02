@@ -50,17 +50,51 @@
 
     <div class="combo-grid">
       {% for c in combos %}
-      <div class="combo-card {% if c.most_picked %}featured{% endif %}">
+      <div class="combo-card {% if c.most_picked %}featured{% endif %}" data-combo-slug="{{ c.slug }}" data-combo-qty="{{ c.qty }}">
         <h3 class="combo-name">{{ c.name }}</h3>
         <p class="combo-tagline">{{ c.tagline }}</p>
-        <div class="combo-qty">{{ c.qty }} packs · any flavors</div>
+        <div class="combo-qty">{{ c.qty }} packs · pick your flavors</div>
         <div class="combo-price">₹{{ c.price }}</div>
         <div class="combo-original">₹{{ c.original_price }}</div>
         <div class="combo-per-pack">~₹{{ c.price_per_pack }}/pack · save ₹{{ c.savings }}</div>
         <ul class="combo-extras">
           {% for x in c.extras %}<li>{{ x }}</li>{% endfor %}
         </ul>
-        <button class="btn btn-primary btn-block" data-add-to-cart data-slug="{{ c.slug }}" data-kind="combo">ADD COMBO</button>
+
+        <!-- Flavor picker (collapsed by default; expands on Customize) -->
+        <button class="btn btn-ghost combo-customize-btn" type="button" data-toggle-customize>CUSTOMIZE FLAVORS ↓</button>
+
+        <div class="flavor-picker" hidden>
+          <div class="flavor-picker-header">
+            <span class="picker-counter">
+              <strong data-counter>0</strong> / {{ c.qty }} packs picked
+            </span>
+            <button type="button" class="picker-reset" data-picker-reset>Reset</button>
+          </div>
+          <div class="flavor-picker-grid">
+            {% for p in products %}
+            <div class="picker-row" data-product-slug="{{ p.slug }}">
+              <div class="picker-thumb" style="background: {{ p.color }};">
+                <img src="{{ url_for('static', filename=p.image) }}" alt="{{ p.name }}" loading="lazy" />
+              </div>
+              <div class="picker-info">
+                <div class="picker-name">{{ p.name }}</div>
+                <div class="picker-meta">{{ p.flavor_notes[0] }}</div>
+              </div>
+              <div class="picker-stepper">
+                <button type="button" class="picker-btn picker-minus" aria-label="Decrease" data-step="-1">−</button>
+                <span class="picker-qty" data-product-qty>0</span>
+                <button type="button" class="picker-btn picker-plus" aria-label="Increase" data-step="1">+</button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <button type="button" class="btn btn-primary btn-block combo-add-customized" data-add-customized disabled>
+            ADD CUSTOM COMBO →
+          </button>
+        </div>
+
+        <button class="btn btn-primary btn-block" data-add-to-cart data-slug="{{ c.slug }}" data-kind="combo" data-quick-add>ADD WITH SURPRISE FLAVORS</button>
       </div>
       {% endfor %}
     </div>
@@ -68,6 +102,7 @@
 </div>
 
 <script>
+  // Tabs scroll-to
   document.querySelectorAll('.shop-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.shop-tab').forEach(t => t.classList.remove('active'));
@@ -75,6 +110,91 @@
       const filter = tab.dataset.filter;
       const target = filter === 'combos' ? document.querySelector('.combo-grid') : document.querySelector('#grid-singles');
       if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Flavor picker logic — per-card state
+  document.querySelectorAll('.combo-card').forEach(card => {
+    const targetQty = parseInt(card.dataset.comboQty);
+    const comboSlug = card.dataset.comboSlug;
+    const picker = card.querySelector('.flavor-picker');
+    const customizeBtn = card.querySelector('[data-toggle-customize]');
+    const counterEl = card.querySelector('[data-counter]');
+    const addBtn = card.querySelector('[data-add-customized]');
+    const resetBtn = card.querySelector('[data-picker-reset]');
+
+    if (!picker) return;
+
+    // Track quantities per slug
+    const state = {};
+
+    function updateCounter() {
+      const total = Object.values(state).reduce((a, b) => a + b, 0);
+      counterEl.textContent = total;
+      counterEl.parentElement.classList.toggle('picker-counter-full', total === targetQty);
+      counterEl.parentElement.classList.toggle('picker-counter-over', total > targetQty);
+      addBtn.disabled = total !== targetQty;
+      // Disable + buttons that would exceed
+      card.querySelectorAll('.picker-row').forEach(row => {
+        const plus = row.querySelector('.picker-plus');
+        plus.disabled = total >= targetQty;
+      });
+    }
+
+    customizeBtn.addEventListener('click', () => {
+      const isHidden = picker.hasAttribute('hidden');
+      if (isHidden) { picker.removeAttribute('hidden'); customizeBtn.textContent = 'HIDE FLAVORS ↑'; }
+      else { picker.setAttribute('hidden', ''); customizeBtn.textContent = 'CUSTOMIZE FLAVORS ↓'; }
+    });
+
+    resetBtn.addEventListener('click', () => {
+      Object.keys(state).forEach(k => delete state[k]);
+      card.querySelectorAll('[data-product-qty]').forEach(el => el.textContent = '0');
+      updateCounter();
+    });
+
+    card.querySelectorAll('.picker-row').forEach(row => {
+      const slug = row.dataset.productSlug;
+      const qtyEl = row.querySelector('[data-product-qty]');
+      row.querySelectorAll('.picker-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const step = parseInt(btn.dataset.step);
+          const current = state[slug] || 0;
+          const total = Object.values(state).reduce((a, b) => a + b, 0);
+          if (step > 0 && total >= targetQty) return;
+          const next = Math.max(0, current + step);
+          if (next === 0) delete state[slug]; else state[slug] = next;
+          qtyEl.textContent = next;
+          updateCounter();
+        });
+      });
+    });
+
+    addBtn.addEventListener('click', async () => {
+      addBtn.disabled = true;
+      addBtn.textContent = 'ADDING...';
+      try {
+        const res = await fetch('/api/cart/add', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({slug: comboSlug, kind: 'combo', qty: 1, flavors: state})
+        });
+        const data = await res.json();
+        if (data.ok) {
+          addBtn.textContent = '✓ ADDED TO CART';
+          if (window.updateCartBadge) window.updateCartBadge(data.cart_count);
+          // Reset state
+          Object.keys(state).forEach(k => delete state[k]);
+          card.querySelectorAll('[data-product-qty]').forEach(el => el.textContent = '0');
+          setTimeout(() => { addBtn.textContent = 'ADD CUSTOM COMBO →'; updateCounter(); }, 1500);
+        } else {
+          addBtn.textContent = data.error || 'ERROR';
+          setTimeout(() => { addBtn.textContent = 'ADD CUSTOM COMBO →'; updateCounter(); }, 2000);
+        }
+      } catch (e) {
+        addBtn.textContent = 'ERROR — RETRY';
+        setTimeout(() => { addBtn.textContent = 'ADD CUSTOM COMBO →'; updateCounter(); }, 2000);
+      }
     });
   });
 </script>

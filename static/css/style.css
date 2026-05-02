@@ -30,11 +30,14 @@ body {
   color: var(--bone);
   font-family: 'Cabinet Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-weight: 500;
-  line-height: 1.5;
+  font-size: 17px;
+  line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   position: relative;
   min-height: 100vh;
+  letter-spacing: -0.005em;
 }
 button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
 a { color: inherit; text-decoration: none; }
@@ -813,22 +816,27 @@ section { padding: 80px 32px; position: relative; }
 .flavor-row[data-flavor="classic-peanut"] { background: var(--peanut); color: var(--volt); }
 .flavor-row[data-flavor="classic-peanut"] .flavor-tagline,
 .flavor-row[data-flavor="classic-peanut"] .flavor-stats { color: var(--bone); }
+.flavor-row[data-flavor="classic-peanut"] h2 { color: var(--volt); -webkit-text-stroke: 1.5px var(--ink); }
 
-.flavor-row[data-flavor="coco-crunch"] { background: var(--coco); color: #FF3DAA; }
+.flavor-row[data-flavor="coco-crunch"] { background: var(--coco); color: var(--bone); }
 .flavor-row[data-flavor="coco-crunch"] .flavor-tagline,
 .flavor-row[data-flavor="coco-crunch"] .flavor-stats { color: var(--bone); }
+.flavor-row[data-flavor="coco-crunch"] h2 { color: var(--volt); -webkit-text-stroke: 2px var(--ink); }
 
-.flavor-row[data-flavor="choco-fudge"] { background: var(--choco); color: var(--paper); }
+.flavor-row[data-flavor="choco-fudge"] { background: var(--choco); color: var(--ink); }
 .flavor-row[data-flavor="choco-fudge"] .flavor-tagline,
-.flavor-row[data-flavor="choco-fudge"] .flavor-stats { color: var(--bone); }
+.flavor-row[data-flavor="choco-fudge"] .flavor-stats { color: var(--ink); }
+.flavor-row[data-flavor="choco-fudge"] h2 { color: var(--paper); -webkit-text-stroke: 2px var(--ink); }
 
 .flavor-row[data-flavor="salted-caramel"] { background: var(--caramel); color: var(--volt); }
 .flavor-row[data-flavor="salted-caramel"] .flavor-tagline,
 .flavor-row[data-flavor="salted-caramel"] .flavor-stats { color: var(--bone); }
+.flavor-row[data-flavor="salted-caramel"] h2 { color: var(--volt); -webkit-text-stroke: 1.5px var(--ink); }
 
-.flavor-row[data-flavor="cookies-cream"] { background: var(--cookies); color: var(--choco); }
+.flavor-row[data-flavor="cookies-cream"] { background: var(--cookies); color: var(--volt); }
 .flavor-row[data-flavor="cookies-cream"] .flavor-tagline,
 .flavor-row[data-flavor="cookies-cream"] .flavor-stats { color: var(--bone); }
+.flavor-row[data-flavor="cookies-cream"] h2 { color: var(--volt); }
 
 .flavor-row[data-flavor="pista-crunch"] { background: var(--pista); color: var(--peanut); }
 .flavor-row[data-flavor="pista-crunch"] .flavor-tagline,
@@ -976,6 +984,169 @@ section { padding: 80px 32px; position: relative; }
 .combo-extras { list-style: none; margin: 24px 0; padding: 0; font-size: 13px; }
 .combo-extras li { padding: 4px 0; }
 .combo-extras li::before { content: '✦ '; color: var(--scribble); }
+
+/* ---------- COMBO FLAVOR PICKER ---------- */
+.combo-customize-btn {
+  width: 100%;
+  margin-bottom: 12px;
+  font-size: 14px !important;
+  padding: 12px 24px !important;
+}
+.flavor-picker {
+  background: rgba(0,0,0,0.04);
+  border: 2px dashed var(--ink);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.flavor-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+.picker-counter {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.picker-counter strong {
+  font-family: 'Bagel Fat One', cursive;
+  font-size: 22px;
+  color: var(--peanut);
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+}
+.picker-counter-full strong { color: #00a854; }
+.picker-counter-over strong { color: var(--scribble); }
+.picker-reset {
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.picker-reset:hover { background: var(--ink); color: var(--volt); }
+.flavor-picker-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  padding-right: 4px;
+}
+.picker-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px;
+  background: var(--paper);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+.picker-row:hover { border-color: var(--ink); }
+.picker-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid var(--ink);
+}
+.picker-thumb img {
+  width: 110%;
+  height: 110%;
+  object-fit: cover;
+}
+.picker-info {
+  min-width: 0;
+}
+.picker-name {
+  font-family: 'Bagel Fat One', cursive;
+  font-size: 15px;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+.picker-meta {
+  font-size: 11px;
+  opacity: 0.6;
+  color: var(--ink);
+}
+.picker-stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--ink);
+  border-radius: 999px;
+  padding: 2px;
+}
+.picker-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--volt);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.15s;
+}
+.picker-btn:hover:not(:disabled) { transform: scale(1.1); }
+.picker-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.picker-qty {
+  min-width: 24px;
+  text-align: center;
+  font-family: 'Bagel Fat One', cursive;
+  font-size: 16px;
+  color: var(--volt);
+}
+.combo-add-customized:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #888 !important;
+  color: var(--bone) !important;
+  box-shadow: none !important;
+}
+.combo-add-customized:disabled:hover {
+  transform: none !important;
+}
+
+/* Cart combo flavor chips */
+.cart-combo-flavors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.cart-flavor-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bone);
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
 
 /* ---------- FINAL CTA ---------- */
 .section-final {

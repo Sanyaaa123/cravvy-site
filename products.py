@@ -3,7 +3,7 @@ CRAVVY products config — single source of truth for SKUs, pricing, and combos.
 Edit this file to update prices/descriptions across the entire site.
 """
 
-# Core SKU data — 6 flavors, ₹50/pack (2 slices @ ₹25/slice), 15g protein
+# Core SKU data — 6 flavors, ₹50/pack (2 slices @ ₹25/slice), 30g protein/pack (15g per slice)
 PRODUCTS = {
     'classic-peanut': {
         'slug': 'classic-peanut',
@@ -17,7 +17,7 @@ PRODUCTS = {
         'color_name': 'peanut',
         'text_color': '#FFE600',
         'on_color': '#FFE600',
-        'protein': '15g',
+        'protein': '30g',
         'fiber': '4g',
         'price': 50,
         'slices_per_pack': 2,
@@ -40,7 +40,7 @@ PRODUCTS = {
         'color_name': 'coco',
         'text_color': '#FF3DAA',
         'on_color': '#FF3DAA',
-        'protein': '15g',
+        'protein': '30g',
         'fiber': '4g',
         'price': 50,
         'slices_per_pack': 2,
@@ -63,7 +63,7 @@ PRODUCTS = {
         'color_name': 'choco',
         'text_color': '#FFFFFF',
         'on_color': '#FFFFFF',
-        'protein': '15g',
+        'protein': '30g',
         'fiber': '4g',
         'price': 50,
         'slices_per_pack': 2,
@@ -86,7 +86,7 @@ PRODUCTS = {
         'color_name': 'caramel',
         'text_color': '#FFE600',
         'on_color': '#FFE600',
-        'protein': '15g',
+        'protein': '30g',
         'fiber': '4g',
         'price': 50,
         'slices_per_pack': 2,
@@ -109,7 +109,7 @@ PRODUCTS = {
         'color_name': 'cookies',
         'text_color': '#FF6A1A',
         'on_color': '#FF6A1A',
-        'protein': '15g',
+        'protein': '30g',
         'fiber': '4g',
         'price': 50,
         'slices_per_pack': 2,
@@ -132,7 +132,7 @@ PRODUCTS = {
         'color_name': 'pista',
         'text_color': '#7B3FF2',
         'on_color': '#7B3FF2',
-        'protein': '15g',
+        'protein': '30g',
         'fiber': '4g',
         'price': 50,
         'slices_per_pack': 2,
@@ -194,7 +194,7 @@ SHIPPING_FEE = 49
 
 # Brand value props for the "Why CRAVVY" section
 VALUE_PROPS = [
-    {'icon': '💪', 'title': '15G PROTEIN.', 'subtitle': "Actually measured. Not 'marketing protein.'"},
+    {'icon': '💪', 'title': '30G PROTEIN.', 'subtitle': "15g per slice × 2 slices. Actually measured."},
     {'icon': '🌾', 'title': 'FIBER THAT FILLS.', 'subtitle': 'Isabgol inside. Sorts your gut. We said it.'},
     {'icon': '🚫', 'title': 'NOT TOO SWEET.', 'subtitle': 'Sweet enough to crave. Not enough to crash.'},
     {'icon': '📃', 'title': 'NO FAKE STUFF.', 'subtitle': "If we can't pronounce it, it ain't in there."},

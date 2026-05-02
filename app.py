@@ -215,6 +215,17 @@ def cart_summary():
             if not c:
                 continue
             line_total = c['price'] * qty
+            # Resolve flavor names if combo has flavor selection
+            flavors_resolved = []
+            for fslug, fqty in (line.get('flavors') or {}).items():
+                fp = get_product(fslug)
+                if fp:
+                    flavors_resolved.append({
+                        'slug': fslug,
+                        'name': fp['name'],
+                        'qty': fqty,
+                        'color': fp['color'],
+                    })
             items.append({
                 'kind': 'combo',
                 'slug': slug,
@@ -227,6 +238,8 @@ def cart_summary():
                 'line_total': line_total,
                 'pack_count': c['qty'] * qty,
                 'free_shipping': c.get('free_shipping', False),
+                'flavors': flavors_resolved,
+                'expected_pack_count': c['qty'],
             })
 
         subtotal += line_total
@@ -422,23 +435,51 @@ def api_cart_add():
     slug = data.get('slug')
     kind = data.get('kind', 'product')
     qty = int(data.get('qty', 1))
+    flavors = data.get('flavors')  # optional dict {slug: count} for combos
 
     if kind == 'product' and not get_product(slug):
         return jsonify({'ok': False, 'error': 'Product not found'}), 404
-    if kind == 'combo' and not get_combo(slug):
-        return jsonify({'ok': False, 'error': 'Combo not found'}), 404
+    if kind == 'combo':
+        c = get_combo(slug)
+        if not c:
+            return jsonify({'ok': False, 'error': 'Combo not found'}), 404
+        # Validate flavor selection
+        if flavors:
+            if not isinstance(flavors, dict):
+                return jsonify({'ok': False, 'error': 'Invalid flavors format'}), 400
+            # Each key must be a real product slug, qty positive int, total = combo qty
+            cleaned = {}
+            total = 0
+            for fslug, fqty in flavors.items():
+                if not get_product(fslug):
+                    return jsonify({'ok': False, 'error': f'Unknown flavor: {fslug}'}), 400
+                fqty_i = int(fqty)
+                if fqty_i < 0:
+                    return jsonify({'ok': False, 'error': 'Flavor qty must be ≥ 0'}), 400
+                if fqty_i > 0:
+                    cleaned[fslug] = fqty_i
+                    total += fqty_i
+            if total != c['qty']:
+                return jsonify({'ok': False, 'error': f"Pick exactly {c['qty']} packs (you picked {total})"}), 400
+            flavors = cleaned
     if qty < 1:
         return jsonify({'ok': False, 'error': 'Invalid qty'}), 400
 
     cart = get_cart()
     found = False
     for line in cart:
+        # Match same combo+flavors so identical picks merge
         if line['slug'] == slug and line.get('kind', 'product') == kind:
+            if kind == 'combo' and line.get('flavors') != flavors:
+                continue
             line['qty'] += qty
             found = True
             break
     if not found:
-        cart.append({'slug': slug, 'kind': kind, 'qty': qty})
+        new_line = {'slug': slug, 'kind': kind, 'qty': qty}
+        if kind == 'combo' and flavors:
+            new_line['flavors'] = flavors
+        cart.append(new_line)
     save_cart(cart)
 
     summary = cart_summary()
