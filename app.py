@@ -41,7 +41,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(32))
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-DATABASE = os.environ.get('DATABASE_PATH', os.path.join(os.path.dirname(__file__), 'cravvy.db'))
+DATABASE = os.path.join("/tmp", "cravvy.db")
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'cravvy123')  # change in prod
 
 # Google Sheets webhook — set via env var to enable order syncing
